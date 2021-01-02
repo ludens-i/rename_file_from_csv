@@ -9,17 +9,19 @@ namespace rename_file_from_csv
     {
         static void Main(string[] args)
         {
+            // ログのインスタンスの生成
+            Logger logger = new Logger("error.log");
             // CSVから取得したデータ格納用リスト
             List<string[]> csv_data = new List<string[]>();
 
             if (!File.Exists(args[0]))
             {
-                Console.WriteLine("CSVファイルが見つからない");
+                logger.WriteLogAndConsole("CSVファイルが見つからない");
                 return;
             }
             if (!Directory.Exists(args[1]))
             {
-                Console.WriteLine("名称変更対象ファイルの格納ディレクトリが見つからない");
+                logger.WriteLogAndConsole("名称変更対象ファイルの格納ディレクトリが見つからない");
                 return;
             }
             var csv_file_path = args[0];
@@ -52,6 +54,11 @@ namespace rename_file_from_csv
             {
                 // 名前変更対象のファイルパス
                 string file_path = Path.Combine(@target_directory_path, values[0]);
+                if (!File.Exists(file_path))
+                {
+                    logger.WriteLogAndConsole($"名称変更対象のファイルが存在しません。パス={file_path}");
+                    continue;
+                }
                 // 拡張子の取得
                 string extension = Path.GetExtension(file_path);
                 // ファイルの格納先ディレクトリの取得
